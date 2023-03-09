@@ -28,7 +28,7 @@ int main()
     SelectObject(hdc, GetStockObject(WHITE_PEN));
     SelectObject(hdc, GetStockObject(WHITE_BRUSH));
 
-    int x = 1000, y = 1000, l = 150;
+    int x = 1000, y = 900, l = 200;
     double radian = PI / 2;
     std::getchar();
 
