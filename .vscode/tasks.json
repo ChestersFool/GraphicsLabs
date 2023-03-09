@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "g++.exe my launch",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe -fdiagnostics-color=always -g3 -Wall \"${file}\" -o \"${fileDirname}\\${fileBasenameNoExtension}.exe\" -lgdi32 && \"${fileDirname}\\${fileBasenameNoExtension}.exe\"",
+			"args": [
+				"-I",
+				"C:\\Users\\Mykhailo\\Desktop\\C++prog\\prog"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"detail": "компилятор: C:\\msys64\\mingw64\\bin\\g++.exe"
+		}
+	]
+}
