@@ -7,7 +7,7 @@ HDC hdc = GetDC(hwnd);
 RECT window = {};
 const double PI = 3.1415926535897932384;
 
-//tregtr
+//t
 void drawPifagorsTree(int x, int y, int l, double radian)
 {
     if (l <= 20)
