@@ -39,7 +39,7 @@ int main()
     HPEN myPen = CreatePen(PS_SOLID, 9, RGB(0, 40, 0));
     SelectObject(hdc, myPen);
 
-    int x = 1000, y = 900, lenght = 200;
+    int x = 1000, y = 1050, lenght = 250;
     double radian = PI / 2;
     std::getchar();
 
