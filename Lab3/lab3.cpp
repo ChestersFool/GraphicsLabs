@@ -1,6 +1,8 @@
 #include <iostream>
 #include <Windows.h>
+#include <stdint.h>
 #include <cmath>
+
 #include <chrono>
 #include <thread>
 
@@ -21,6 +23,7 @@ class CRectangle
 public:
     double top, right, bottom, left;
 
+    // * CONSTRUCTOR WITH TWO POINT
     CRectangle(double top, double right, double bottom, double left)
     {
         this->top = top;
@@ -38,39 +41,142 @@ public:
 class CPoint
 {
 public:
-    double x, y;
-    int binaryCode;
+    double x = 0, y = 0;
+    uint8_t binaryCode = 0;
 
-    CPoint(double x, double y, int binaryCode)
+    CPoint(double x, double y, uint8_t binaryCode)
     {
         this->x = x;
         this->y = y;
         this->binaryCode = binaryCode;
     }
 
+    CPoint() {}
+
+    // * CALCULATION OF BINARY CODE FOR TASK
     void calculate(CRectangle &rec)
     {
         binaryCode = (x < rec.left ? LEFT : 0) + (x > rec.right ? RIGHT : 0) + (y < rec.top ? TOP : 0) + (y > rec.bottom ? BOTTOM : 0);
     }
+
+    CPoint &operator=(const CPoint &outher)
+    {
+        this->x = outher.x;
+        this->y = outher.y;
+        this->binaryCode = outher.binaryCode;
+
+        return *this;
+    }
 };
 
-double calculate(CRectangle &rec, CPoint &point)
+class CDirectVariation
 {
-    return (point.x < rec.left ? LEFT : 0) + (point.x > rec.right ? RIGHT : 0) + (point.y < rec.top ? TOP : 0) + (point.y > rec.bottom ? BOTTOM : 0);
+public:
+    double a, b, c;
+
+    CDirectVariation(CPoint &first, CPoint &second)
+    {
+        a = fabs(first.y - second.y);
+        b = fabs(first.x - second.x);
+        c = fabs(first.x * second.y - first.y * second.x);
+    }
+
+    void Enumeration(CPoint &first, CPoint &second)
+    {
+        a = fabs(first.y - second.y);
+        b = fabs(first.x - second.x);
+        c = fabs(first.x * second.y - first.y * second.x);
+    }
+};
+
+void DrawSegment(CPoint &first, CPoint &second)
+{
+    MoveToEx(hdc, first.x, first.y, NULL);
+    LineTo(hdc, second.x, second.y);
+}
+
+/*
+ * 0 two points out of rectangle
+ * 1 two points in rectangle
+ */
+bool SutherlandCoen(CPoint &first, CPoint &second, CRectangle &rec)
+{
+    CPoint outOfRec;
+    CDirectVariation direct(first, second);
+    bool firstOutOfRec;
+
+    first.calculate(rec);
+    second.calculate(rec);
+
+    while (first.binaryCode | second.binaryCode)
+    {
+        if (first.binaryCode & second.binaryCode)
+            return 0;
+        //
+        //
+        //
+        if (first.binaryCode)
+        {
+            outOfRec = first;
+            firstOutOfRec = true;
+        }
+        else
+        {
+            outOfRec = second;
+            firstOutOfRec = false;
+        }
+        //
+        //
+        //
+        if (outOfRec.binaryCode & LEFT)
+        {
+            outOfRec.y += direct.a * (rec.left - outOfRec.x) / direct.b;
+            outOfRec.x = rec.left;
+            outOfRec.binaryCode -= LEFT;
+        }
+        else if (outOfRec.binaryCode & RIGHT)
+        {
+            outOfRec.y -= direct.a * (rec.right - outOfRec.x) / direct.b;
+            outOfRec.x = rec.right;
+            outOfRec.binaryCode -= RIGHT;
+        }
+        else if (outOfRec.binaryCode & TOP)
+        {
+            outOfRec.x += direct.b * (rec.top - outOfRec.y) / direct.a;
+            outOfRec.y = rec.top;
+            outOfRec.binaryCode -= TOP;
+        }
+        else if (outOfRec.binaryCode & BOTTOM)
+        {
+            outOfRec.x -= direct.b * (rec.bottom - outOfRec.y) / direct.a;
+            outOfRec.y = rec.bottom;
+            outOfRec.binaryCode -= BOTTOM;
+        }
+
+        firstOutOfRec ? first = outOfRec : second = outOfRec;
+        direct.Enumeration(first, second);
+    }
+    return 1;
 }
 
 int main()
 {
     CRectangle rec(100, 200, 200, 100);
-    CPoint first(234, 100, 0), second(424, 432, 0);
+    CPoint first(120, 150, 0), second(5, 120, 0);
 
     SelectObject(hdc, GetStockObject(WHITE_PEN));
     SelectObject(hdc, GetStockObject(NULL_BRUSH));
 
     rec.Draw();
-    first.calculate(rec);
-    second.calculate(rec);
-    cout << first.binaryCode << '\t' << second.binaryCode;
+    DrawSegment(first, second);
+
+    HPEN myPen = CreatePen(PS_SOLID, 5, RGB(0, 0, 255));
+    SelectObject(hdc, myPen);
+
+    if (SutherlandCoen(first, second, rec))
+    {
+        DrawSegment(first, second);
+    }
 
     std::getchar();
     return 0;
