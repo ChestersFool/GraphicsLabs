@@ -161,23 +161,43 @@ bool SutherlandCoen(CPoint &first, CPoint &second, CRectangle &rec)
 
 int main()
 {
-    CRectangle rec(100, 200, 200, 100);
-    CPoint first(120, 150, 0), second(5, 120, 0);
+    std::getchar();
 
+    CRectangle rec(100, 200, 200, 100);
+    CPoint points[10] = {
+        CPoint(150, 150, 0),
+        CPoint(50, 50, 0),
+        CPoint(250, 75, 0),
+        CPoint(50, 75, 0),
+        CPoint(150, 20, 0),
+        CPoint(150, 220, 0),
+        CPoint(110, 110, 0),
+        CPoint(190, 110, 0),
+        CPoint(50, 50, 0),
+        CPoint(50, 150, 0),
+    };
+
+    HPEN myPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
     SelectObject(hdc, GetStockObject(WHITE_PEN));
     SelectObject(hdc, GetStockObject(NULL_BRUSH));
 
     rec.Draw();
-    DrawSegment(first, second);
-
-    HPEN myPen = CreatePen(PS_SOLID, 5, RGB(0, 0, 255));
-    SelectObject(hdc, myPen);
-
-    if (SutherlandCoen(first, second, rec))
+    for (int i = 0; i < 10; i += 2)
     {
-        DrawSegment(first, second);
+        SelectObject(hdc, GetStockObject(WHITE_PEN));
+        DrawSegment(points[i], points[i + 1]);
+
+        if (SutherlandCoen(points[i], points[i + 1], rec))
+        {
+            SelectObject(hdc, myPen);
+            DrawSegment(points[i], points[i + 1]);
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
     std::getchar();
+    std::getchar();
+    std::getchar();
+
     return 0;
 }
