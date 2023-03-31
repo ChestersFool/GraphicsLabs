@@ -55,22 +55,40 @@ float distanceCPoint(CPoint p1, CPoint p2)
 void drawLine(CPoint p1, CPoint p2, CPoint camera)
 {
     float x, y;
-    x = p1.x * distanceCPoint(p1, camera) / p1.z;
-    y = p1.y * distanceCPoint(p1, camera) / p1.z;
+    x = (p1.x - camera.x); // * distanceCPoint(p1, camera) / p1.z;
+    y = (p1.y - camera.y); // * distanceCPoint(p1, camera) / p1.z;
+    z = (p1.z - camera.z);
+    CPoint tempPoint(x, y, z);
+    x *= distanceCPoint(tempPoint, camera) / p1.z;
+    y *= distanceCPoint(tempPoint, camera) / p1.z;
     MoveToEx(hdc, x + camera.x, y + camera.y, NULL);
-    x = p2.x * distanceCPoint(p2, camera) / p2.z;
-    y = p2.y * distanceCPoint(p2, camera) / p2.z;
+    x = (p2.x - camera.x); // * distanceCPoint(p1, camera) / p1.z;
+    y = (p2.y - camera.y); // * distanceCPoint(p1, camera) / p1.z;
+    z = (p2.z - camera.z);
+    tempPoint.x = x;
+    temoPoint.y = y;
     LineTo(hdc, x + camera.x, y + camera.y);
 }
 
 // void drawLine(CPoint p1, CPoint p2, CPoint camera)
 // {
 //     float x, y;
-//     x = p1.x / distanceCPoint(p1, camera) * p1.z;
-//     y = p1.y / distanceCPoint(p1, camera) * p1.z;
+//     x = (p1.x - camera.x) / distanceCPoint(p1, camera) * p1.z;
+//     y = (p1.y - camera.y) / distanceCPoint(p1, camera) * p1.z;
 //     MoveToEx(hdc, x + camera.x, y + camera.y, NULL);
-//     x = p2.x / distanceCPoint(p2, camera) * p2.z;
-//     y = p2.y / distanceCPoint(p2, camera) * p2.z;
+//     x = (p2.x - camera.x) / distanceCPoint(p2, camera) * p2.z;
+//     y = (p2.y - camera.y) / distanceCPoint(p2, camera) * p2.z;
+//     LineTo(hdc, x, y);
+// }
+
+// void drawLine(CPoint p1, CPoint p2, CPoint camera)
+// {
+//     float x, y;
+//     x = p1.x * distanceCPoint(p1, camera) / p1.z;
+//     y = p1.y * distanceCPoint(p1, camera) / p1.z;
+//     MoveToEx(hdc, x + camera.x, y + camera.y, NULL);
+//     x = p2.x * distanceCPoint(p2, camera) / p2.z;
+//     y = p2.y * distanceCPoint(p2, camera) / p2.z;
 //     LineTo(hdc, x + camera.x, y + camera.y);
 // }
 
@@ -105,6 +123,10 @@ void draw3DRectangle(C3DRectangle rect)
     drawLine(rect.p2, rect.p6, rect.camera);
     drawLine(rect.p3, rect.p7, rect.camera);
     drawLine(rect.p4, rect.p8, rect.camera);
+
+    for (int i = -1; i <= 1; i++)
+        for (int j = -1; j <= 1; j++)
+            SetPixel(hdc, rect.camera.x + i, rect.camera.y + j, RGB(255, 255, 255));
 }
 
 int main()
@@ -128,7 +150,7 @@ int main()
     //
     //
 
-    CPoint camera(125, 125, 0), camera2(250, 125, 0);
+    CPoint camera(0, 125, 0), camera2(125, 125, 0);
     C3DRectangle first(CPoint(100, 100, Z), CPoint(100, 150, Z), CPoint(150, 150, Z), CPoint(150, 100, Z), CPoint(100, 100, Z + 50), CPoint(100, 150, Z + 50), CPoint(150, 150, Z + 50), CPoint(150, 100, Z + 50), camera);
 
     draw3DRectangle(first);
