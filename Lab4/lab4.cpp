@@ -128,7 +128,7 @@ int main()
     //
     //
 
-    CPoint camera(0, 125, 0), camera2(250, 125, 0);
+    CPoint camera(125, 125, 0), camera2(250, 125, 0);
     C3DRectangle first(CPoint(100, 100, Z), CPoint(100, 150, Z), CPoint(150, 150, Z), CPoint(150, 100, Z), CPoint(100, 100, Z + 50), CPoint(100, 150, Z + 50), CPoint(150, 150, Z + 50), CPoint(150, 100, Z + 50), camera);
 
     draw3DRectangle(first);
