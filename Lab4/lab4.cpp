@@ -53,39 +53,24 @@ float distanceCPoint(CPoint p1, CPoint p2)
     return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) + pow(p2.z - p1.z, 2));
 }
 
-// void drawLine(CPoint p1, CPoint p2, CPoint camera)
-// {
-//     float x, y, z;
-//     x = (p1.x - camera.x); // * distanceCPoint(p1, camera) / p1.z;
-//     y = (p1.y - camera.y); // * distanceCPoint(p1, camera) / p1.z;
-//     z = (p1.z - camera.z);
-//     CPoint tempPoint(x, y, z);
-//     x *= distanceCPoint(tempPoint, camera) / (p1.z - camera.z);
-//     y *= distanceCPoint(tempPoint, camera) / (p1.z - camera.z);
-//     MoveToEx(hdc, x, y, NULL);
-//     x = (p2.x - camera.x); // * distanceCPoint(p1, camera) / p1.z;
-//     y = (p2.y - camera.y); // * distanceCPoint(p1, camera) / p1.z;
-//     z = (p2.z - camera.z);
-//     tempPoint.x = x;
-//     tempPoint.y = y;
-//     tempPoint.z = z;
-//     x *= distanceCPoint(tempPoint, camera) / (p2.z - camera.z);
-//     y *= distanceCPoint(tempPoint, camera) / (p2.z - camera.z);
-//     LineTo(hdc, x, y);
-// }
-
 void drawLine(CPoint p1, CPoint p2, CPoint camera)
 {
-    float x, y, z;
-    x = (p1.x - camera.x) / distanceCPoint(p1, camera) * (p1.z - camera.z);
-    y = (p1.y - camera.y) / distanceCPoint(p1, camera) * (p1.z - camera.z);
+    float x, y, z, coef1 = distanceCPoint(p1, camera) * (p1.z - camera.z), coef2 = distanceCPoint(p2, camera) * (p2.z - camera.z);
+    // x = (p1.x - camera.x) / distanceCPoint(p1, camera) * (p1.z - camera.z);
+    // y = (p1.y - camera.y) / distanceCPoint(p1, camera) * (p1.z - camera.z);
+    x = (p1.x - camera.x) * distanceCPoint(p1, camera) / (p1.z - camera.z);
+    y = (p1.y - camera.y) * distanceCPoint(p1, camera) / (p1.z - camera.z);
 
     MoveToEx(hdc, x + camera.x, y + camera.y, NULL);
+    // MoveToEx(hdc, camera.x + x / distanceCPoint(p1, camera) * (p1.z - camera.z), camera.y + y / distanceCPoint(p1, camera) * (p1.z - camera.z), NULL);
 
-    x = (p2.x - camera.x) / distanceCPoint(p2, camera) * (p2.z - camera.z);
-    y = (p2.y - camera.y) / distanceCPoint(p2, camera) * (p2.z - camera.z);
+    // x = (p2.x - camera.x) / distanceCPoint(p2, camera) * (p2.z - camera.z);
+    // y = (p2.y - camera.y) / distanceCPoint(p2, camera) * (p2.z - camera.z);
+    x = (p2.x - camera.x) * distanceCPoint(p2, camera) / (p2.z - camera.z);
+    y = (p2.y - camera.y) * distanceCPoint(p2, camera) / (p2.z - camera.z);
 
     LineTo(hdc, x + camera.x, y + camera.y);
+    // LineTo(hdc, camera.x + x / distanceCPoint(p2, camera) * (p1.z - camera.z), camera.y + y / distanceCPoint(p2, camera) * (p1.z - camera.z));
 }
 
 void drawRectangle(CRectangle rect)
@@ -128,8 +113,8 @@ void draw3DRectangle(C3DRectangle rect)
 int main()
 {
     HANDLE out_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD maxWindow = GetLargestConsoleWindowSize(out_handle); 
-    SMALL_RECT srctWindow = {0, 0, maxWindow.X - 50, maxWindow.Y - 20};
+    COORD maxWindow = GetLargestConsoleWindowSize(out_handle);
+    SMALL_RECT srctWindow = {0, 0, maxWindow.X - 50, maxWindow.Y - 15};
     SMALL_RECT minWindow = {0, 0, 0, 0};
     SetConsoleWindowInfo(out_handle, true, &minWindow);
     SetConsoleScreenBufferSize(out_handle, maxWindow);
@@ -137,18 +122,15 @@ int main()
 
     std::getchar();
     const float Z = 50;
-    const int DICMOVEMENT = 200;
+    const int DISMOVEMENT = 200;
 
-    SelectObject(hdc, GetStockObject(WHITE_PEN));
-    SelectObject(hdc, GetStockObject(NULL_BRUSH));
+    CPoint camera(425 + DISMOVEMENT, 425, 0), camera2(475, 100, -400);
 
-    CPoint camera(425 + DICMOVEMENT, 425, 30), camera2(425 + DICMOVEMENT * 2, 200, 50);
-
-    C3DRectangle first(CPoint(400 + DICMOVEMENT, 400, Z), CPoint(400 + DICMOVEMENT, 450, Z), CPoint(450 + DICMOVEMENT, 450, Z), CPoint(450 + DICMOVEMENT, 400, Z), CPoint(400 + DICMOVEMENT, 400, Z + 50), CPoint(400 + DICMOVEMENT, 450, Z + 50), CPoint(450 + DICMOVEMENT, 450, Z + 50), CPoint(450 + DICMOVEMENT, 400, Z + 50), camera);
+    C3DRectangle first(CPoint(400 + DISMOVEMENT, 400, Z), CPoint(400 + DISMOVEMENT, 450, Z), CPoint(450 + DISMOVEMENT, 450, Z), CPoint(450 + DISMOVEMENT, 400, Z), CPoint(400 + DISMOVEMENT, 400, Z + 50), CPoint(400 + DISMOVEMENT, 450, Z + 50), CPoint(450 + DISMOVEMENT, 450, Z + 50), CPoint(450 + DISMOVEMENT, 400, Z + 50), camera);
 
     draw3DRectangle(first);
 
-    C3DRectangle second(CPoint(400 + DICMOVEMENT * 2, 400, Z), CPoint(400 + DICMOVEMENT * 2, 450, Z), CPoint(450 + DICMOVEMENT * 2, 450, Z), CPoint(450 + DICMOVEMENT * 2, 400, Z), CPoint(400 + DICMOVEMENT * 2, 400, Z + 50), CPoint(400 + DICMOVEMENT * 2, 450, Z + 50), CPoint(450 + DICMOVEMENT * 2, 450, Z + 50), CPoint(450 + DICMOVEMENT * 2, 400, Z + 50), camera2);
+    C3DRectangle second(CPoint(400, 400, Z), CPoint(400, 550, Z), CPoint(550, 550, Z), CPoint(550, 400, Z), CPoint(400, 400, Z + 50), CPoint(400, 550, Z + 50), CPoint(550, 550, Z + 50), CPoint(550, 400, Z + 50), camera2);
     draw3DRectangle(second);
 
     std::getchar();
