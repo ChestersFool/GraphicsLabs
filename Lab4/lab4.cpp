@@ -55,22 +55,16 @@ float distanceCPoint(CPoint p1, CPoint p2)
 
 void drawLine(CPoint p1, CPoint p2, CPoint camera)
 {
-    float x, y, z, coef1 = distanceCPoint(p1, camera) * (p1.z - camera.z), coef2 = distanceCPoint(p2, camera) * (p2.z - camera.z);
-    // x = (p1.x - camera.x) / distanceCPoint(p1, camera) * (p1.z - camera.z);
-    // y = (p1.y - camera.y) / distanceCPoint(p1, camera) * (p1.z - camera.z);
-    x = (p1.x - camera.x) * distanceCPoint(p1, camera) / (p1.z - camera.z);
-    y = (p1.y - camera.y) * distanceCPoint(p1, camera) / (p1.z - camera.z);
+    float x, y, z;
+    x = (p1.x - camera.x) * distanceCPoint(p1, camera) / fabs(p1.z - camera.z);
+    y = (p1.y - camera.y) * distanceCPoint(p1, camera) / fabs(p1.z - camera.z);
 
     MoveToEx(hdc, x + camera.x, y + camera.y, NULL);
-    // MoveToEx(hdc, camera.x + x / distanceCPoint(p1, camera) * (p1.z - camera.z), camera.y + y / distanceCPoint(p1, camera) * (p1.z - camera.z), NULL);
 
-    // x = (p2.x - camera.x) / distanceCPoint(p2, camera) * (p2.z - camera.z);
-    // y = (p2.y - camera.y) / distanceCPoint(p2, camera) * (p2.z - camera.z);
-    x = (p2.x - camera.x) * distanceCPoint(p2, camera) / (p2.z - camera.z);
-    y = (p2.y - camera.y) * distanceCPoint(p2, camera) / (p2.z - camera.z);
+    x = (p2.x - camera.x) * distanceCPoint(p2, camera) / fabs(p2.z - camera.z);
+    y = (p2.y - camera.y) * distanceCPoint(p2, camera) / fabs(p2.z - camera.z);
 
     LineTo(hdc, x + camera.x, y + camera.y);
-    // LineTo(hdc, camera.x + x / distanceCPoint(p2, camera) * (p1.z - camera.z), camera.y + y / distanceCPoint(p2, camera) * (p1.z - camera.z));
 }
 
 void drawRectangle(CRectangle rect)
@@ -124,7 +118,7 @@ int main()
     const float Z = 50;
     const int DISMOVEMENT = 200;
 
-    CPoint camera(425 + DISMOVEMENT, 425, 0), camera2(475, 100, -400);
+    CPoint camera(300 + DISMOVEMENT, 350, 20), camera2(100, 100, 600);//(475, 100, -400);
 
     C3DRectangle first(CPoint(400 + DISMOVEMENT, 400, Z), CPoint(400 + DISMOVEMENT, 450, Z), CPoint(450 + DISMOVEMENT, 450, Z), CPoint(450 + DISMOVEMENT, 400, Z), CPoint(400 + DISMOVEMENT, 400, Z + 50), CPoint(400 + DISMOVEMENT, 450, Z + 50), CPoint(450 + DISMOVEMENT, 450, Z + 50), CPoint(450 + DISMOVEMENT, 400, Z + 50), camera);
 
