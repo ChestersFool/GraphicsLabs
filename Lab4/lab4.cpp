@@ -55,7 +55,7 @@ float distanceCPoints(CPoint p1, CPoint p2)
 
 void drawLine(CPoint p1, CPoint p2, CPoint camera)
 {
-    float x, y, z, coef1 = distanceCPoint(p1, camera) * (p1.z - camera.z), coef2 = distanceCPoint(p2, camera) * (p2.z - camera.z);
+    float x, y, z;
     // x = (p1.x - camera.x) / distanceCPoint(p1, camera) * (p1.z - camera.z);
     // y = (p1.y - camera.y) / distanceCPoint(p1, camera) * (p1.z - camera.z);
     x = (p1.x - camera.x) * distanceCPoint(p1, camera) / (p1.z - camera.z);
