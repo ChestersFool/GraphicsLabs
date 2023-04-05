@@ -58,15 +58,15 @@ void drawLine(CPoint p1, CPoint p2, CPoint camera)
     float x, y, z;
     // x = (p1.x - camera.x) / distanceCPoint(p1, camera) * (p1.z - camera.z);
     // y = (p1.y - camera.y) / distanceCPoint(p1, camera) * (p1.z - camera.z);
-    x = (p1.x - camera.x) * distanceCPoint(p1, camera) / (p1.z - camera.z);
-    y = (p1.y - camera.y) * distanceCPoint(p1, camera) / (p1.z - camera.z);
+    x = (p1.x - camera.x) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
+    y = (p1.y - camera.y) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
 
     MoveToEx(hdc, x + camera.x, y + camera.y, NULL);
 
     // x = (p2.x - camera.x) / distanceCPoint(p2, camera) * (p2.z - camera.z);
     // y = (p2.y - camera.y) / distanceCPoint(p2, camera) * (p2.z - camera.z);
-    x = (p2.x - camera.x) * distanceCPoint(p2, camera) / (p2.z - camera.z);
-    y = (p2.y - camera.y) * distanceCPoint(p2, camera) / (p2.z - camera.z);
+    x = (p2.x - camera.x) * distanceCPoints(p2, camera) / fabs(p2.z - camera.z);
+    y = (p2.y - camera.y) * distanceCPoints(p2, camera) / fabs(p2.z - camera.z);
 
     LineTo(hdc, x + camera.x, y + camera.y);
 }
