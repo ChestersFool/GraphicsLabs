@@ -18,7 +18,7 @@ class CPoint
 {
 public:
     float x, y, z;
-
+    
     CPoint() = default;
     CPoint(float x, float y, float z) : x(x), y(y), z(z) {}
 };
@@ -48,29 +48,23 @@ public:
     }
 };
 
-float distanceCPoint(CPoint p1, CPoint p2)
+float distanceCPoints(CPoint p1, CPoint p2)
 {
     return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) + pow(p2.z - p1.z, 2));
 }
 
 void drawLine(CPoint p1, CPoint p2, CPoint camera)
 {
-    float x, y, z, coef1 = distanceCPoint(p1, camera) * (p1.z - camera.z), coef2 = distanceCPoint(p2, camera) * (p2.z - camera.z);
-    // x = (p1.x - camera.x) / distanceCPoint(p1, camera) * (p1.z - camera.z);
-    // y = (p1.y - camera.y) / distanceCPoint(p1, camera) * (p1.z - camera.z);
-    x = (p1.x - camera.x) * distanceCPoint(p1, camera) / (p1.z - camera.z);
-    y = (p1.y - camera.y) * distanceCPoint(p1, camera) / (p1.z - camera.z);
+    float x, y, z;
+    x = (p1.x - camera.x) * distanceCPoints(p1, camera) / (p1.z - camera.z);
+    y = (p1.y - camera.y) * distanceCPoints(p1, camera) / (p1.z - camera.z);
 
     MoveToEx(hdc, x + camera.x, y + camera.y, NULL);
-    // MoveToEx(hdc, camera.x + x / distanceCPoint(p1, camera) * (p1.z - camera.z), camera.y + y / distanceCPoint(p1, camera) * (p1.z - camera.z), NULL);
 
-    // x = (p2.x - camera.x) / distanceCPoint(p2, camera) * (p2.z - camera.z);
-    // y = (p2.y - camera.y) / distanceCPoint(p2, camera) * (p2.z - camera.z);
-    x = (p2.x - camera.x) * distanceCPoint(p2, camera) / (p2.z - camera.z);
-    y = (p2.y - camera.y) * distanceCPoint(p2, camera) / (p2.z - camera.z);
+    x = (p2.x - camera.x) * distanceCPoints(p2, camera) / (p2.z - camera.z);
+    y = (p2.y - camera.y) * distanceCPoints(p2, camera) / (p2.z - camera.z);
 
     LineTo(hdc, x + camera.x, y + camera.y);
-    // LineTo(hdc, camera.x + x / distanceCPoint(p2, camera) * (p1.z - camera.z), camera.y + y / distanceCPoint(p2, camera) * (p1.z - camera.z));
 }
 
 void drawRectangle(CRectangle rect)
