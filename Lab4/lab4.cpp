@@ -131,7 +131,11 @@ int main()
     C3DRectangle second(CPoint(400, 400, Z), CPoint(400, 550, Z), CPoint(550, 550, Z), CPoint(550, 400, Z), CPoint(400, 400, Z + 50), CPoint(400, 550, Z + 50), CPoint(550, 550, Z + 50), CPoint(550, 400, Z + 50), camera2);
     draw3DRectangle(second);
 
+    ReleaseDC(hwnd, hdc);
+
     std::getchar();
     std::getchar();
+
+    
     return 0;
 }
