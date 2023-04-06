@@ -16,6 +16,21 @@ public:
     CPoint(double x, double y, double z) : x(x), y(y), z(z) {}
 };
 
+class C2DRectangle
+{
+public:
+    CPoint point[4];
+
+    C2DRectangle() = default;
+    C2DRectangle(CPoint p1, CPoint p2, CPoint p3, CPoint p4)
+    {
+        point[0] = p1;
+        point[1] = p2;
+        point[2] = p3;
+        point[3] = p4;
+    }
+};
+
 class C3DRectangle
 {
 public:
@@ -74,25 +89,6 @@ void drawLine(CPoint p1, CPoint p2, CPoint camera, HDC hdc, int WINDOW_SIZE)
     LineTo(hdc, x + camera.x + WINDOW_SIZE / 2, (y + camera.y) * (-1) + WINDOW_SIZE / 2);
 }
 
-void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE)
-{
-    HPEN myPen = CreatePen(PS_SOLID, 5, RGB(0, 0, 0));
-    SelectObject(hdc, myPen);
-
-    for (int i = 0; i < 4; i++)
-    {
-        drawLine(rect.point[i], rect.point[(i + 1) % 4], camera, hdc, WINDOW_SIZE);
-        drawLine(rect.point[i], rect.point[i + 4], camera, hdc, WINDOW_SIZE);
-        drawLine(rect.point[i + 4], rect.point[(i + 1) % 4 + 4], camera, hdc, WINDOW_SIZE);
-    }
-
-    for (int i = 0; i < 4; i++)
-
-        for (int i = -1; i <= 1; i++)
-            for (int j = -1; j <= 1; j++)
-                SetPixel(hdc, camera.x + i + WINDOW_SIZE / 2, (camera.y + j) * (-1) + WINDOW_SIZE / 2, RGB(255, 255, 255));
-}
-
 void drawAxis(HDC hdc, int WINDOW_SIZE)
 {
     HPEN myPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
@@ -137,3 +133,108 @@ void rorateY3DRectangle(C3DRectangle &rect, const double rad)
         rect.point[i].z = (-rect.point[i].x * sin(rad)) + (rect.point[i].z * cos(rad));
     }
 }
+
+void draw2DRectangle(C2DRectangle &rect, CPoint &camera, HDC hdc, int WINDOW_SIZE)
+{
+    POINT point[4] = {rect.point[0].x + camera.x + WINDOW_SIZE / 2, (rect.point[0].y + camera.y) * (-1) + WINDOW_SIZE / 2,
+                      rect.point[1].x + camera.x + WINDOW_SIZE / 2, (rect.point[1].y + camera.y) * (-1) + WINDOW_SIZE / 2,
+                      rect.point[2].x + camera.x + WINDOW_SIZE / 2, (rect.point[2].y + camera.y) * (-1) + WINDOW_SIZE / 2,
+                      rect.point[3].x + camera.x + WINDOW_SIZE / 2, (rect.point[3].y + camera.y) * (-1) + WINDOW_SIZE / 2};
+    Polygon(hdc, point, 4);
+}
+
+void sort2DRectangles(C2DRectangle rects[6], CPoint camera)
+{
+    C2DRectangle temp;
+    double z1, z2;
+
+    for (int k = 0; k < 5; k++)
+        for (int i = 0; i < 5; i++)
+        {
+            z1 = z2 = 0;
+            for (int j = 0; j < 4; j++)
+            {
+                z1 += distanceCPoints(rects[i].point[j], camera) / 4;
+                z2 += distanceCPoints(rects[i + 1].point[j], camera) / 4;
+            }
+            // * from far to near
+            if (z1 < z2)
+            {
+                temp = rects[i];
+                rects[i] = rects[i + 1];
+                rects[i + 1] = temp;
+            }
+        }
+}
+
+void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE)
+{
+    for (int i = 0; i < 8; i++)
+    {
+        rect.point[i].x = (rect.point[i].x - camera.x) * distanceCPoints(rect.point[i], camera) / fabs(rect.point[i].z - camera.z);
+        rect.point[i].y = (rect.point[i].y - camera.y) * distanceCPoints(rect.point[i], camera) / fabs(rect.point[i].z - camera.z);
+    }
+
+    C2DRectangle rects[6]{{rect.point[0], rect.point[1], rect.point[2], rect.point[3]},
+                          {rect.point[4], rect.point[5], rect.point[6], rect.point[7]},
+                          {rect.point[1], rect.point[2], rect.point[6], rect.point[5]},
+                          {rect.point[0], rect.point[3], rect.point[7], rect.point[4]},
+                          {rect.point[0], rect.point[1], rect.point[5], rect.point[4]},
+                          {rect.point[2], rect.point[3], rect.point[7], rect.point[6]}};
+
+    sort2DRectangles(rects, camera);
+
+    for (int i = 0; i < 6; i++)
+    {
+        HPEN myPen = CreatePen(PS_SOLID, 1, RGB(20 * i, 20 * i, 20 * i));
+        HBRUSH myBrush = CreateSolidBrush(RGB(20 * i, 20 * i, 20 * i));
+
+        SelectObject(hdc, myPen);
+        SelectObject(hdc, myBrush);
+
+        draw2DRectangle(rects[i], camera, hdc, WINDOW_SIZE);
+    }
+
+    // HPEN myPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+    // HBRUSH myBrush = CreateSolidBrush(RGB(0, 0, 0));
+    // SelectObject(hdc, myPen);
+    // SelectObject(hdc, myBrush);
+    // draw2DRectangle(rects[0], camera, hdc, WINDOW_SIZE);
+    // draw2DRectangle(rects[1], camera, hdc, WINDOW_SIZE);
+
+    // HPEN myPen1 = CreatePen(PS_SOLID, 1, RGB(40, 40, 40));
+    // HBRUSH myBrush1 = CreateSolidBrush(RGB(40, 40, 40));
+    // SelectObject(hdc, myPen1);
+    // SelectObject(hdc, myBrush1);
+    // draw2DRectangle(rects[2], camera, hdc, WINDOW_SIZE);
+    // draw2DRectangle(rects[3], camera, hdc, WINDOW_SIZE);
+
+    // HPEN myPen2 = CreatePen(PS_SOLID, 1, RGB(80, 80, 80));
+    // HBRUSH myBrush2 = CreateSolidBrush(RGB(80, 80, 80));
+    // SelectObject(hdc, myPen2);
+    // SelectObject(hdc, myBrush2);
+    // draw2DRectangle(rects[4], camera, hdc, WINDOW_SIZE);
+    // draw2DRectangle(rects[5], camera, hdc, WINDOW_SIZE);
+}
+
+// void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE)
+// {
+//     HPEN myPen = CreatePen(PS_SOLID, 5, RGB(0, 0, 0));
+//     HBRUSH myBrush = CreateSolidBrush(RGB(0, 0, 0));
+//     SelectObject(hdc, myPen);
+//     SelectObject(hdc, GetStockObject(BLACK_BRUSH));
+
+//     for (int i = 0; i < 4; i++)
+//         drawLine(rect.point[i], rect.point[(i + 1) % 4], camera, hdc, WINDOW_SIZE);
+
+//     for (int i = 0; i < 4; i++)
+//         drawLine(rect.point[i], rect.point[i + 4], camera, hdc, WINDOW_SIZE);
+
+//     for (int i = 0; i < 4; i++)
+//         drawLine(rect.point[i + 4], rect.point[(i + 1) % 4 + 4], camera, hdc, WINDOW_SIZE);
+
+//     for (int i = 0; i < 4; i++)
+//         for (int i = -1; i <= 1; i++)
+//             for (int j = -1; j <= 1; j++)
+//                 SetPixel(hdc, camera.x + i + WINDOW_SIZE / 2, (camera.y + j) * (-1) + WINDOW_SIZE / 2, RGB(255, 255, 255));
+// }
