@@ -8,29 +8,16 @@
 
 using std::cout, std::cin;
 
-HWND hwnd = GetConsoleWindow();
-HDC hdc = GetDC(hwnd);
-RECT window = {};
-
 const double PI = 3.1415926535897932384;
+const int WINDOW_SIZE = 800;
 
 class CPoint
 {
 public:
     float x, y, z;
-    
+
     CPoint() = default;
     CPoint(float x, float y, float z) : x(x), y(y), z(z) {}
-};
-
-class CRectangle
-{
-public:
-    CPoint p1, p2, p3, p4;
-    CPoint camera;
-
-    CRectangle() = default;
-    CRectangle(CPoint p1, CPoint p2, CPoint p3, CPoint p4, CPoint camera) : p1(p1), p2(p2), p3(p3), p4(p4), camera(camera) {}
 };
 
 class C3DRectangle
@@ -53,63 +40,54 @@ float distanceCPoints(CPoint p1, CPoint p2)
     return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) + pow(p2.z - p1.z, 2));
 }
 
-void drawLine(CPoint p1, CPoint p2, CPoint camera)
+void drawLine(CPoint p1, CPoint p2, CPoint camera, HDC hdc)
 {
-    float x, y, z;
-    // x = (p1.x - camera.x) / distanceCPoint(p1, camera) * (p1.z - camera.z);
-    // y = (p1.y - camera.y) / distanceCPoint(p1, camera) * (p1.z - camera.z);
+    float x, y;
+
     x = (p1.x - camera.x) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
     y = (p1.y - camera.y) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
 
-    MoveToEx(hdc, x + camera.x, y + camera.y, NULL);
+    MoveToEx(hdc, x + camera.x + WINDOW_SIZE / 2, (y + camera.y) * (-1) + WINDOW_SIZE / 2, NULL);
 
-    // x = (p2.x - camera.x) / distanceCPoint(p2, camera) * (p2.z - camera.z);
-    // y = (p2.y - camera.y) / distanceCPoint(p2, camera) * (p2.z - camera.z);
     x = (p2.x - camera.x) * distanceCPoints(p2, camera) / fabs(p2.z - camera.z);
     y = (p2.y - camera.y) * distanceCPoints(p2, camera) / fabs(p2.z - camera.z);
 
-    LineTo(hdc, x + camera.x, y + camera.y);
+    LineTo(hdc, x + camera.x + WINDOW_SIZE / 2, (y + camera.y) * (-1) + WINDOW_SIZE / 2);
 }
 
-void drawRectangle(CRectangle rect)
-{
-    drawLine(rect.p1, rect.p2, rect.camera);
-    drawLine(rect.p2, rect.p3, rect.camera);
-    drawLine(rect.p3, rect.p4, rect.camera);
-    drawLine(rect.p4, rect.p1, rect.camera);
-}
-
-void draw3DRectangle(C3DRectangle rect)
+void draw3DRectangle(C3DRectangle rect, HDC hdc)
 {
     SelectObject(hdc, GetStockObject(WHITE_PEN));
-    drawLine(rect.p1, rect.p2, rect.camera);
-    drawLine(rect.p2, rect.p3, rect.camera);
-    drawLine(rect.p4, rect.p1, rect.camera);
-    HPEN myPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-    SelectObject(hdc, myPen);
-    drawLine(rect.p3, rect.p4, rect.camera);
+    drawLine(rect.p1, rect.p2, rect.camera, hdc);
+    drawLine(rect.p2, rect.p3, rect.camera, hdc);
+    drawLine(rect.p4, rect.p1, rect.camera, hdc);
+    drawLine(rect.p3, rect.p4, rect.camera, hdc);
 
     HPEN myPen1 = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
     SelectObject(hdc, myPen1);
-    drawLine(rect.p5, rect.p6, rect.camera);
-    drawLine(rect.p6, rect.p7, rect.camera);
-    drawLine(rect.p7, rect.p8, rect.camera);
-    drawLine(rect.p8, rect.p5, rect.camera);
+    drawLine(rect.p5, rect.p6, rect.camera, hdc);
+    drawLine(rect.p6, rect.p7, rect.camera, hdc);
+    drawLine(rect.p7, rect.p8, rect.camera, hdc);
+    drawLine(rect.p8, rect.p5, rect.camera, hdc);
 
     HPEN myPen2 = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
     SelectObject(hdc, myPen2);
-    drawLine(rect.p1, rect.p5, rect.camera);
-    drawLine(rect.p2, rect.p6, rect.camera);
-    drawLine(rect.p3, rect.p7, rect.camera);
-    drawLine(rect.p4, rect.p8, rect.camera);
+    drawLine(rect.p1, rect.p5, rect.camera, hdc);
+    drawLine(rect.p2, rect.p6, rect.camera, hdc);
+    drawLine(rect.p3, rect.p7, rect.camera, hdc);
+    drawLine(rect.p4, rect.p8, rect.camera, hdc);
 
     for (int i = -1; i <= 1; i++)
         for (int j = -1; j <= 1; j++)
-            SetPixel(hdc, rect.camera.x + i, rect.camera.y + j, RGB(255, 255, 255));
+            SetPixel(hdc, rect.camera.x + i + WINDOW_SIZE / 2, (rect.camera.y + j) * (-1) + WINDOW_SIZE / 2, RGB(255, 255, 255));
 }
 
 int main()
 {
+    HWND hwnd = GetConsoleWindow();
+    HDC hdc = GetDC(hwnd);
+    RECT window = {};
+
     HANDLE out_handle = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD maxWindow = GetLargestConsoleWindowSize(out_handle);
     SMALL_RECT srctWindow = {0, 0, maxWindow.X - 50, maxWindow.Y - 15};
@@ -119,23 +97,17 @@ int main()
     SetConsoleWindowInfo(out_handle, true, &srctWindow);
 
     std::getchar();
-    const float Z = 50;
-    const int DISMOVEMENT = 200;
 
-    CPoint camera(300 + DISMOVEMENT, 350, 20), camera2(100, 100, 600);//(475, 100, -400);
+    CPoint camera(0, 0, 100);
 
-    C3DRectangle first(CPoint(400 + DISMOVEMENT, 400, Z), CPoint(400 + DISMOVEMENT, 450, Z), CPoint(450 + DISMOVEMENT, 450, Z), CPoint(450 + DISMOVEMENT, 400, Z), CPoint(400 + DISMOVEMENT, 400, Z + 50), CPoint(400 + DISMOVEMENT, 450, Z + 50), CPoint(450 + DISMOVEMENT, 450, Z + 50), CPoint(450 + DISMOVEMENT, 400, Z + 50), camera);
+    C3DRectangle first(CPoint(50, 50, 0), CPoint(50, 100, 0), CPoint(100, 100, 0), CPoint(100, 50, 0), CPoint(50, 50, 50), CPoint(50, 100, 50), CPoint(100, 100, 50), CPoint(100, 50, 50), camera);
 
-    draw3DRectangle(first);
-
-    C3DRectangle second(CPoint(400, 400, Z), CPoint(400, 550, Z), CPoint(550, 550, Z), CPoint(550, 400, Z), CPoint(400, 400, Z + 50), CPoint(400, 550, Z + 50), CPoint(550, 550, Z + 50), CPoint(550, 400, Z + 50), camera2);
-    draw3DRectangle(second);
+    draw3DRectangle(first, hdc);
 
     ReleaseDC(hwnd, hdc);
 
     std::getchar();
     std::getchar();
 
-    
     return 0;
 }

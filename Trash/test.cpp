@@ -166,11 +166,16 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_PAINT:
+        hdc = GetDC(hwndMain);
+        
         rect.left = 0;
         rect.top = 0;
         rect.right = 200;
         rect.bottom = 200;
-        hdc = GetDC(hwndMain);
+
+        ty.set_axes();
+        ty.draw_axes(hdc);
+
         ReleaseDC(hwndMain, hdc);
         return 0;
 

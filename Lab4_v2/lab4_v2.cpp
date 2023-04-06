@@ -1,10 +1,4 @@
-#include <iostream>
-#include <Windows.h>
-#include <stdint.h>
-#include <cmath>
-
-#include <chrono>
-#include <thread>
+#include "Classes.cpp"
 
 const int WINDOW_SIZE = 800;
 
@@ -15,6 +9,10 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     HDC hdc;
     LPPOINT lpPoint;
+
+    CPoint camera(0, 0, 100);
+    C3DRectangle first(CPoint(50, 50, 0), CPoint(50, 100, 0), CPoint(100, 100, 0), CPoint(100, 50, 0), CPoint(50, 50, 50), CPoint(50, 100, 50), CPoint(100, 100, 50), CPoint(100, 50, 50));
+
     switch (message)
     {
     case WM_PAINT: // ! DRAWING
@@ -22,8 +20,8 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         SelectObject(hdc, GetStockObject(BLACK_PEN));
 
-        MoveToEx(hdc,100, 100, NULL);
-        LineTo(hdc, 200, 200);
+        drawAxis(hdc, WINDOW_SIZE);
+        draw3DRectangle(first, camera, hdc, WINDOW_SIZE);
 
         ReleaseDC(hwndMain, hdc);
         return 0;
