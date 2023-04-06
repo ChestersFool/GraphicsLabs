@@ -19,10 +19,20 @@ public:
 class C3DRectangle
 {
 public:
-    CPoint p1, p2, p3, p4, p5, p6, p7, p8;
+    CPoint point[8];
 
     C3DRectangle() = default;
-    C3DRectangle(CPoint p1, CPoint p2, CPoint p3, CPoint p4, CPoint p5, CPoint p6, CPoint p7, CPoint p8) : p1(p1), p2(p2), p3(p3), p4(p4), p5(p5), p6(p6), p7(p7), p8(p8) {}
+    C3DRectangle(CPoint p1, CPoint p2, CPoint p3, CPoint p4, CPoint p5, CPoint p6, CPoint p7, CPoint p8)
+    {
+        point[0] = p1;
+        point[1] = p2;
+        point[2] = p3;
+        point[3] = p4;
+        point[4] = p5;
+        point[5] = p6;
+        point[6] = p7;
+        point[7] = p8;
+    }
 };
 
 float distanceCPoints(CPoint p1, CPoint p2)
@@ -50,23 +60,18 @@ void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE)
     HPEN myPen = CreatePen(PS_SOLID, 5, RGB(0, 0, 0));
     SelectObject(hdc, myPen);
 
-    drawLine(rect.p1, rect.p2, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p2, rect.p3, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p4, rect.p1, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p3, rect.p4, camera, hdc, WINDOW_SIZE);
+    for (int i = 0; i < 4; i++)
+    {
+        drawLine(rect.point[i], rect.point[(i + 1) % 4], camera, hdc, WINDOW_SIZE);
+        drawLine(rect.point[i], rect.point[i + 4], camera, hdc, WINDOW_SIZE);
+        drawLine(rect.point[i + 4], rect.point[(i + 1) % 4 + 4], camera, hdc, WINDOW_SIZE);
+    }
 
-    drawLine(rect.p5, rect.p6, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p6, rect.p7, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p7, rect.p8, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p8, rect.p5, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p1, rect.p5, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p2, rect.p6, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p3, rect.p7, camera, hdc, WINDOW_SIZE);
-    drawLine(rect.p4, rect.p8, camera, hdc, WINDOW_SIZE);
+    for (int i = 0; i < 4; i++)
 
-    for (int i = -1; i <= 1; i++)
-        for (int j = -1; j <= 1; j++)
-            SetPixel(hdc, camera.x + i + WINDOW_SIZE / 2, (camera.y + j) * (-1) + WINDOW_SIZE / 2, RGB(255, 255, 255));
+        for (int i = -1; i <= 1; i++)
+            for (int j = -1; j <= 1; j++)
+                SetPixel(hdc, camera.x + i + WINDOW_SIZE / 2, (camera.y + j) * (-1) + WINDOW_SIZE / 2, RGB(255, 255, 255));
 }
 
 void drawAxis(HDC hdc, int WINDOW_SIZE)
