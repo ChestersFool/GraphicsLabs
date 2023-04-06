@@ -6,37 +6,34 @@ const double PI = 3.1415926535897932384;
 HINSTANCE hInst;
 HWND hwndMain;
 
+CPoint camera(0, 0, 200);
+C3DRectangle first(CPoint(-50, -50, 0), CPoint(-50, -100, 0), CPoint(-100, -100, 0), CPoint(-100, -50, 0), CPoint(-50, -50, 50), CPoint(-50, -100, 50), CPoint(-100, -100, 50), CPoint(-100, -50, 50));
+C3DRectangle second(CPoint(-50, 50, 0), CPoint(-50, 100, 0), CPoint(-100, 100, 0), CPoint(-100, 50, 0), CPoint(-50, 50, 50), CPoint(-50, 100, 50), CPoint(-100, 100, 50), CPoint(-100, 50, 50));
+RotationMatrix m(PI / 100);
+
 LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     HDC hdc;
     LPPOINT lpPoint;
 
-    CPoint camera(0, 0, 100);
-    C3DRectangle first(CPoint(-50, -50, 0), CPoint(-50, -100, 0), CPoint(-100, -100, 0), CPoint(-100, -50, 0), CPoint(-50, -50, 50), CPoint(-50, -100, 50), CPoint(-100, -100, 50), CPoint(-100, -50, 50));
-    C3DRectangle second(CPoint(-50, 50, 0), CPoint(-50, 100, 0), CPoint(-100, 100, 0), CPoint(-100, 50, 0), CPoint(-50, 50, 50), CPoint(-50, 100, 50), CPoint(-100, 100, 50), CPoint(-100, 50, 50));
-    RotationMatrix m(PI / 100);
-
     switch (message)
-    {
+    {   
     case WM_PAINT: // ! DRAWING
         hdc = GetDC(hwndMain);
 
         SelectObject(hdc, GetStockObject(BLACK_PEN));
 
-        for (int i = 0; i < 200; i++)
-        {
-            Rectangle(hdc, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
+        Rectangle(hdc, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
 
-            drawAxis(hdc, WINDOW_SIZE);
+        drawAxis(hdc, WINDOW_SIZE);
 
-            rorateX3DRectangle(first, PI / 100);
-            draw3DRectangle(first, camera, hdc, WINDOW_SIZE);
+        rorateX3DRectangle(first, PI / 120);
+        draw3DRectangle(first, camera, hdc, WINDOW_SIZE);
 
-            rorateY3DRectangle(second, PI / 100);
-            draw3DRectangle(second, camera, hdc, WINDOW_SIZE);
+        rorateY3DRectangle(second, PI / 120);
+        draw3DRectangle(second, camera, hdc, WINDOW_SIZE);
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(14));
-        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(14));
 
         ReleaseDC(hwndMain, hdc);
         return 0;

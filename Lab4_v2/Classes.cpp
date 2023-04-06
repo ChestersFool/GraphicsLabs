@@ -10,10 +10,10 @@
 class CPoint
 {
 public:
-    float x, y, z;
+    double x, y, z;
 
     CPoint() = default;
-    CPoint(float x, float y, float z) : x(x), y(y), z(z) {}
+    CPoint(double x, double y, double z) : x(x), y(y), z(z) {}
 };
 
 class C3DRectangle
@@ -37,10 +37,10 @@ public:
 
 struct RotationMatrix
 {
-    float matrix[3][3];
+    double matrix[3][3];
 
     RotationMatrix() = default;
-    RotationMatrix(float angle)
+    RotationMatrix(double angle)
     {
         matrix[0][0] = cos(angle);
         matrix[0][1] = 0;
@@ -54,14 +54,14 @@ struct RotationMatrix
     }
 };
 
-float distanceCPoints(CPoint p1, CPoint p2)
+double distanceCPoints(CPoint p1, CPoint p2)
 {
     return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) + pow(p2.z - p1.z, 2));
 }
 
 void drawLine(CPoint p1, CPoint p2, CPoint camera, HDC hdc, int WINDOW_SIZE)
 {
-    float x, y;
+    double x, y;
 
     x = (p1.x - camera.x) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
     y = (p1.y - camera.y) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
@@ -108,7 +108,7 @@ void drawAxis(HDC hdc, int WINDOW_SIZE)
     LineTo(hdc, 0, WINDOW_SIZE);
 }
 
-void rorateX3DRectangle(C3DRectangle &rect, const float rad)
+void rorateX3DRectangle(C3DRectangle &rect, const double rad)
 {
     for (int i = 0; i < 8; i++)
     {
@@ -118,7 +118,7 @@ void rorateX3DRectangle(C3DRectangle &rect, const float rad)
     }
 }
 
-void rorateAntiX3DRectangle(C3DRectangle &rect, const float rad)
+void rorateAntiX3DRectangle(C3DRectangle &rect, const double rad)
 {
     for (int i = 0; i < 8; i++)
     {
@@ -128,7 +128,7 @@ void rorateAntiX3DRectangle(C3DRectangle &rect, const float rad)
     }
 }
 
-void rorateY3DRectangle(C3DRectangle &rect, const float rad)
+void rorateY3DRectangle(C3DRectangle &rect, const double rad)
 {
     for (int i = 0; i < 8; i++)
     {
@@ -137,7 +137,3 @@ void rorateY3DRectangle(C3DRectangle &rect, const float rad)
         rect.point[i].z = (-rect.point[i].x * sin(rad)) + (rect.point[i].z * cos(rad));
     }
 }
-
-			// myresult[count].x = (mydata[count].x * cos(rad)) + (mydata[count].z * sin(rad));
-			// myresult[count].y = mydata[count].y;
-			// myresult[count].z = (-mydata[count].x * sin(rad)) + (mydata[count].z * cos(rad));
