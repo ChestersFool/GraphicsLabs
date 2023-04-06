@@ -152,7 +152,7 @@ void sort2DRectangles(C2DRectangle rects[6], CPoint camera)
         }
 }
 
-void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE)
+void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE, bool transperent = false)
 {
     for (int i = 0; i < 8; i++)
     {
@@ -176,6 +176,9 @@ void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE)
 
         SelectObject(hdc, myPen);
         SelectObject(hdc, myBrush);
+
+        if(transperent)
+            SelectObject(hdc, GetStockObject(NULL_BRUSH));
 
         draw2DRectangle(rects[i], camera, hdc, WINDOW_SIZE);
     }
