@@ -33,7 +33,7 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         rorateY3DRectangle(second, PI / 120);
         draw3DRectangle(second, camera, hdc, WINDOW_SIZE);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(70));
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
 
         ReleaseDC(hwndMain, hdc);
         return 0;
@@ -41,6 +41,7 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
+
     default:
         return DefWindowProc(hwnd, message, wParam, lParam);
     }

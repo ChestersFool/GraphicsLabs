@@ -74,21 +74,6 @@ double distanceCPoints(CPoint p1, CPoint p2)
     return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) + pow(p2.z - p1.z, 2));
 }
 
-void drawLine(CPoint p1, CPoint p2, CPoint camera, HDC hdc, int WINDOW_SIZE)
-{
-    double x, y;
-
-    x = (p1.x - camera.x) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
-    y = (p1.y - camera.y) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
-
-    MoveToEx(hdc, x + camera.x + WINDOW_SIZE / 2, (y + camera.y) * (-1) + WINDOW_SIZE / 2, NULL);
-
-    x = (p2.x - camera.x) * distanceCPoints(p2, camera) / fabs(p2.z - camera.z);
-    y = (p2.y - camera.y) * distanceCPoints(p2, camera) / fabs(p2.z - camera.z);
-
-    LineTo(hdc, x + camera.x + WINDOW_SIZE / 2, (y + camera.y) * (-1) + WINDOW_SIZE / 2);
-}
-
 void drawAxis(HDC hdc, int WINDOW_SIZE)
 {
     HPEN myPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
@@ -194,28 +179,22 @@ void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE)
 
         draw2DRectangle(rects[i], camera, hdc, WINDOW_SIZE);
     }
-
-    // HPEN myPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-    // HBRUSH myBrush = CreateSolidBrush(RGB(0, 0, 0));
-    // SelectObject(hdc, myPen);
-    // SelectObject(hdc, myBrush);
-    // draw2DRectangle(rects[0], camera, hdc, WINDOW_SIZE);
-    // draw2DRectangle(rects[1], camera, hdc, WINDOW_SIZE);
-
-    // HPEN myPen1 = CreatePen(PS_SOLID, 1, RGB(40, 40, 40));
-    // HBRUSH myBrush1 = CreateSolidBrush(RGB(40, 40, 40));
-    // SelectObject(hdc, myPen1);
-    // SelectObject(hdc, myBrush1);
-    // draw2DRectangle(rects[2], camera, hdc, WINDOW_SIZE);
-    // draw2DRectangle(rects[3], camera, hdc, WINDOW_SIZE);
-
-    // HPEN myPen2 = CreatePen(PS_SOLID, 1, RGB(80, 80, 80));
-    // HBRUSH myBrush2 = CreateSolidBrush(RGB(80, 80, 80));
-    // SelectObject(hdc, myPen2);
-    // SelectObject(hdc, myBrush2);
-    // draw2DRectangle(rects[4], camera, hdc, WINDOW_SIZE);
-    // draw2DRectangle(rects[5], camera, hdc, WINDOW_SIZE);
 }
+
+// void drawLine(CPoint p1, CPoint p2, CPoint camera, HDC hdc, int WINDOW_SIZE)
+// {
+//     double x, y;
+
+//     x = (p1.x - camera.x) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
+//     y = (p1.y - camera.y) * distanceCPoints(p1, camera) / fabs(p1.z - camera.z);
+
+//     MoveToEx(hdc, x + camera.x + WINDOW_SIZE / 2, (y + camera.y) * (-1) + WINDOW_SIZE / 2, NULL);
+
+//     x = (p2.x - camera.x) * distanceCPoints(p2, camera) / fabs(p2.z - camera.z);
+//     y = (p2.y - camera.y) * distanceCPoints(p2, camera) / fabs(p2.z - camera.z);
+
+//     LineTo(hdc, x + camera.x + WINDOW_SIZE / 2, (y + camera.y) * (-1) + WINDOW_SIZE / 2);
+// }
 
 // void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE)
 // {
