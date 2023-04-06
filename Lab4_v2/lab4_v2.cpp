@@ -1,6 +1,7 @@
 #include "Classes.cpp"
 
 const int WINDOW_SIZE = 800;
+const double PI = 3.1415926535897932384;
 
 HINSTANCE hInst;
 HWND hwndMain;
@@ -11,7 +12,9 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     LPPOINT lpPoint;
 
     CPoint camera(0, 0, 100);
-    C3DRectangle first(CPoint(50, 50, 0), CPoint(50, 100, 0), CPoint(100, 100, 0), CPoint(100, 50, 0), CPoint(50, 50, 50), CPoint(50, 100, 50), CPoint(100, 100, 50), CPoint(100, 50, 50));
+    C3DRectangle first(CPoint(-50, -50, 0), CPoint(-50, -100, 0), CPoint(-100, -100, 0), CPoint(-100, -50, 0), CPoint(-50, -50, 50), CPoint(-50, -100, 50), CPoint(-100, -100, 50), CPoint(-100, -50, 50));
+    C3DRectangle second(CPoint(-50, 50, 0), CPoint(-50, 100, 0), CPoint(-100, 100, 0), CPoint(-100, 50, 0), CPoint(-50, 50, 50), CPoint(-50, 100, 50), CPoint(-100, 100, 50), CPoint(-100, 50, 50));
+    RotationMatrix m(PI / 100);
 
     switch (message)
     {
@@ -20,8 +23,20 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         SelectObject(hdc, GetStockObject(BLACK_PEN));
 
-        drawAxis(hdc, WINDOW_SIZE);
-        draw3DRectangle(first, camera, hdc, WINDOW_SIZE);
+        for (int i = 0; i < 200; i++)
+        {
+            Rectangle(hdc, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
+
+            drawAxis(hdc, WINDOW_SIZE);
+
+            rorateX3DRectangle(first, PI / 100);
+            draw3DRectangle(first, camera, hdc, WINDOW_SIZE);
+
+            rorateY3DRectangle(second, PI / 100);
+            draw3DRectangle(second, camera, hdc, WINDOW_SIZE);
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(14));
+        }
 
         ReleaseDC(hwndMain, hdc);
         return 0;

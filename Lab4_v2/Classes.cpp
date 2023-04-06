@@ -1,4 +1,4 @@
-#pragma ONCE
+#pragma once
 #include <iostream>
 #include <Windows.h>
 #include <stdint.h>
@@ -32,6 +32,25 @@ public:
         point[5] = p6;
         point[6] = p7;
         point[7] = p8;
+    }
+};
+
+struct RotationMatrix
+{
+    float matrix[3][3];
+
+    RotationMatrix() = default;
+    RotationMatrix(float angle)
+    {
+        matrix[0][0] = cos(angle);
+        matrix[0][1] = 0;
+        matrix[0][2] = sin(angle);
+        matrix[1][0] = 0;
+        matrix[1][1] = 1;
+        matrix[1][2] = 0;
+        matrix[2][0] = -sin(angle);
+        matrix[2][1] = 0;
+        matrix[2][2] = cos(angle);
     }
 };
 
@@ -88,3 +107,37 @@ void drawAxis(HDC hdc, int WINDOW_SIZE)
     MoveToEx(hdc, WINDOW_SIZE, 0, NULL);
     LineTo(hdc, 0, WINDOW_SIZE);
 }
+
+void rorateX3DRectangle(C3DRectangle &rect, const float rad)
+{
+    for (int i = 0; i < 8; i++)
+    {
+        rect.point[i].x = rect.point[i].x;
+        rect.point[i].y = (rect.point[i].y * cos(rad)) - (rect.point[i].z * sin(rad));
+        rect.point[i].z = (rect.point[i].y * sin(rad)) + (rect.point[i].z * cos(rad));
+    }
+}
+
+void rorateAntiX3DRectangle(C3DRectangle &rect, const float rad)
+{
+    for (int i = 0; i < 8; i++)
+    {
+        rect.point[i].x = rect.point[i].x;
+        rect.point[i].y = (rect.point[i].y * cos(rad)) + (rect.point[i].z * sin(rad));
+        rect.point[i].z = (-rect.point[i].y * sin(rad)) + (rect.point[i].z * cos(rad));
+    }
+}
+
+void rorateY3DRectangle(C3DRectangle &rect, const float rad)
+{
+    for (int i = 0; i < 8; i++)
+    {
+        rect.point[i].x = (rect.point[i].x * cos(rad)) + (rect.point[i].z * sin(rad));
+        rect.point[i].y = rect.point[i].y;
+        rect.point[i].z = (-rect.point[i].x * sin(rad)) + (rect.point[i].z * cos(rad));
+    }
+}
+
+			// myresult[count].x = (mydata[count].x * cos(rad)) + (mydata[count].z * sin(rad));
+			// myresult[count].y = mydata[count].y;
+			// myresult[count].z = (-mydata[count].x * sin(rad)) + (mydata[count].z * cos(rad));

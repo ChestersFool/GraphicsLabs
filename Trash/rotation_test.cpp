@@ -91,12 +91,8 @@ int main()
 
         // * MULTIPLY
         for (int i = 0; i < 2; i++)
-        {
             for (int j = 0; j < 2; j++)
-            {
                 result[i] += coordsPoint[j] * m.matrix[j][i];
-            }
-        }
 
         // * SET NEW COORDS
         rec[k].x = result[0];
