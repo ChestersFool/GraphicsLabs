@@ -87,6 +87,8 @@ void drawAxis(HDC hdc, int WINDOW_SIZE)
 
     MoveToEx(hdc, WINDOW_SIZE, 0, NULL);
     LineTo(hdc, 0, WINDOW_SIZE);
+
+    DeleteObject(myPen);
 }
 
 void rorateX3DRectangle(C3DRectangle &rect, const double rad)
@@ -152,12 +154,13 @@ void sort2DRectangles(C2DRectangle rects[6], CPoint camera)
         }
 }
 
-void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE, bool transperent = false)
-{
+void draw3DRectangle(C3DRectangle rect1, CPoint camera, HDC hdc, int WINDOW_SIZE, bool transperent = false, bool toWhite = false)
+{   
+    C3DRectangle rect = rect1;
     for (int i = 0; i < 8; i++)
     {
-        rect.point[i].x = (rect.point[i].x - camera.x) * distanceCPoints(rect.point[i], camera) / fabs(rect.point[i].z - camera.z);
-        rect.point[i].y = (rect.point[i].y - camera.y) * distanceCPoints(rect.point[i], camera) / fabs(rect.point[i].z - camera.z);
+        rect.point[i].x = int((rect.point[i].x - camera.x) * distanceCPoints(rect.point[i], camera) / fabs(rect.point[i].z - camera.z));
+        rect.point[i].y = int((rect.point[i].y - camera.y) * distanceCPoints(rect.point[i], camera) / fabs(rect.point[i].z - camera.z));
     }
 
     C2DRectangle rects[6]{{rect.point[0], rect.point[1], rect.point[2], rect.point[3]},
@@ -170,18 +173,28 @@ void draw3DRectangle(C3DRectangle rect, CPoint camera, HDC hdc, int WINDOW_SIZE,
     sort2DRectangles(rects, camera);
 
     for (int i = 0; i < 6; i++)
-    {
+    {   
         HPEN myPen = CreatePen(PS_SOLID, 1, RGB(20 * i, 20 * i, 20 * i));
         HBRUSH myBrush = CreateSolidBrush(RGB(20 * i, 20 * i, 20 * i));
 
         SelectObject(hdc, myPen);
         SelectObject(hdc, myBrush);
 
+        if(toWhite)
+        {
+            SelectObject(hdc, GetStockObject(WHITE_PEN));
+            SelectObject(hdc, GetStockObject(WHITE_BRUSH));
+        }
+
         if(transperent)
             SelectObject(hdc, GetStockObject(NULL_BRUSH));
 
         draw2DRectangle(rects[i], camera, hdc, WINDOW_SIZE);
+
+        DeleteObject(myPen);
+        DeleteObject(myBrush);
     }
+
 }
 
 // void drawLine(CPoint p1, CPoint p2, CPoint camera, HDC hdc, int WINDOW_SIZE)
