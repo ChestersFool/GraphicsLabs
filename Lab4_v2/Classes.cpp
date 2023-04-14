@@ -158,6 +158,7 @@ void sort2DRectangles(C2DRectangle rects[6], CPoint camera)
 void draw3DRectangle(C3DRectangle rect1, CPoint camera, HDC hdc, int WINDOW_SIZE, bool transperent = false, bool toWhite = false)
 {   
     C3DRectangle rect = rect1;
+    
     for (int i = 0; i < 8; i++)
     {
         rect.point[i].x = int((rect.point[i].x - camera.x) * distanceCPoints(rect.point[i], camera) / fabs(rect.point[i].z - camera.z));
