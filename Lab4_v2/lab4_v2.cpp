@@ -7,7 +7,7 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 HINSTANCE hInst;
 HWND hwndMain;
 
-CPoint camera(0, 0, 200);
+CPoint camera(0, 0, 200);//-75
 C3DRectangle first(CPoint(-50, -50, 0), CPoint(-50, -100, 0), CPoint(-100, -100, 0), CPoint(-100, -50, 0), CPoint(-50, -50, 50), CPoint(-50, -100, 50), CPoint(-100, -100, 50), CPoint(-100, -50, 50));
 C3DRectangle second(CPoint(-50, 50, 0), CPoint(-50, 100, 0), CPoint(-100, 100, 0), CPoint(-100, 50, 0), CPoint(-50, 50, 50), CPoint(-50, 100, 50), CPoint(-100, 100, 50), CPoint(-100, 50, 50));
 RotationMatrix m(PI / 100);
@@ -39,7 +39,7 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         draw3DRectangle(first, camera, hdc, WINDOW_SIZE);
 
         rorateY3DRectangle(second, PI / 100);
-        draw3DRectangle(second, camera, hdc, WINDOW_SIZE, true);
+        draw3DRectangle(second, camera, hdc, WINDOW_SIZE);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(17));
         // }

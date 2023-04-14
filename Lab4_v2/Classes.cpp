@@ -144,7 +144,8 @@ void sort2DRectangles(C2DRectangle rects[6], CPoint camera)
                 z1 += distanceCPoints(rects[i].point[j], camera) / 4;
                 z2 += distanceCPoints(rects[i + 1].point[j], camera) / 4;
             }
-            // * from far to near
+            // *! from far to near
+            // * from near to far
             if (z1 < z2)
             {
                 temp = rects[i];
