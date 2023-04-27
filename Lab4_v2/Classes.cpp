@@ -135,8 +135,13 @@ void sort2DRectangles(C2DRectangle rects[6], CPoint camera)
     C2DRectangle temp;
     double z1, z2;
 
-    for (int k = 0; k < 5; k++)
-        for (int i = 0; i < 5; i++)
+    int lastSorted = 5;
+    bool sorting = true;
+
+    while(sorting)
+    {
+        sorting = false;
+        for (int i = 0; i < lastSorted; i++)
         {
             z1 = z2 = 0;
             for (int j = 0; j < 4; j++)
@@ -151,8 +156,30 @@ void sort2DRectangles(C2DRectangle rects[6], CPoint camera)
                 temp = rects[i];
                 rects[i] = rects[i + 1];
                 rects[i + 1] = temp;
+                sorting = true;
             }
         }
+        lastSorted--;
+    }
+
+    // for (int k = 0; k < 5; k++)
+    //     for (int i = 0; i < 5; i++)
+    //     {
+    //         z1 = z2 = 0;
+    //         for (int j = 0; j < 4; j++)
+    //         {
+    //             z1 += distanceCPoints(rects[i].point[j], camera) / 4;
+    //             z2 += distanceCPoints(rects[i + 1].point[j], camera) / 4;
+    //         }
+    //         // *! from far to near
+    //         // * from near to far
+    //         if (z1 < z2)
+    //         {
+    //             temp = rects[i];
+    //             rects[i] = rects[i + 1];
+    //             rects[i + 1] = temp;
+    //         }
+    //     }
 }
 
 void draw3DRectangle(C3DRectangle rect1, CPoint camera, HDC hdc, int WINDOW_SIZE, bool transperent = false, bool toWhite = false)

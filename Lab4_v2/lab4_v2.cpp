@@ -7,10 +7,11 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 HINSTANCE hInst;
 HWND hwndMain;
 
-CPoint camera(0, 0, 200);//-75
+CPoint camera(0, 0, 200); //-75
 C3DRectangle first(CPoint(-50, -50, 0), CPoint(-50, -100, 0), CPoint(-100, -100, 0), CPoint(-100, -50, 0), CPoint(-50, -50, 50), CPoint(-50, -100, 50), CPoint(-100, -100, 50), CPoint(-100, -50, 50));
 C3DRectangle second(CPoint(-50, 50, 0), CPoint(-50, 100, 0), CPoint(-100, 100, 0), CPoint(-100, 50, 0), CPoint(-50, 50, 50), CPoint(-50, 100, 50), CPoint(-100, 100, 50), CPoint(-100, 50, 50));
 RotationMatrix m(PI / 100);
+double agle_rad = PI / 100;
 
 LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -20,6 +21,7 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     // C3DRectangle first(CPoint(-50, -50, 0), CPoint(-50, -100, 0), CPoint(-100, -100, 0), CPoint(-100, -50, 0), CPoint(-50, -50, 50), CPoint(-50, -100, 50), CPoint(-100, -100, 50), CPoint(-100, -50, 50));
     // C3DRectangle second(CPoint(-50, 50, 0), CPoint(-50, 100, 0), CPoint(-100, 100, 0), CPoint(-100, 50, 0), CPoint(-50, 50, 50), CPoint(-50, 100, 50), CPoint(-100, 100, 50), CPoint(-100, 50, 50));
     // RotationMatrix m(PI / 100);
+    C3DRectangle temp1(CPoint(-50, -50, 0), CPoint(-50, -100, 0), CPoint(-100, -100, 0), CPoint(-100, -50, 0), CPoint(-50, -50, 50), CPoint(-50, -100, 50), CPoint(-100, -100, 50), CPoint(-100, -50, 50)), temp2(CPoint(-50, 50, 0), CPoint(-50, 100, 0), CPoint(-100, 100, 0), CPoint(-100, 50, 0), CPoint(-50, 50, 50), CPoint(-50, 100, 50), CPoint(-100, 100, 50), CPoint(-100, 50, 50));
 
     switch (message)
     {
@@ -28,6 +30,7 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         // for (int i = 0; i < 199; i++)
         // {
+
         SelectObject(hdc, GetStockObject(WHITE_BRUSH));
         SelectObject(hdc, GetStockObject(WHITE_BRUSH));
 
@@ -35,11 +38,20 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         drawAxis(hdc, WINDOW_SIZE);
 
+        // * OLD
         rorateX3DRectangle(first, PI / 100);
         draw3DRectangle(first, camera, hdc, WINDOW_SIZE);
 
         rorateY3DRectangle(second, PI / 100);
         draw3DRectangle(second, camera, hdc, WINDOW_SIZE);
+
+        // * NEW
+        // rorateX3DRectangle(temp1, agle_rad);
+        // draw3DRectangle(temp1, camera, hdc, WINDOW_SIZE);
+
+        // rorateY3DRectangle(temp2, agle_rad);
+        // draw3DRectangle(temp2, camera, hdc, WINDOW_SIZE);
+        // agle_rad += PI / 100;
 
         std::this_thread::sleep_for(std::chrono::milliseconds(17));
         // }
